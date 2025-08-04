@@ -20,7 +20,7 @@ export const useLogin = () => {
           email,
           password,
         });
-        console.log({ data, token: data.data.token });
+
         setCookie("token", data.data.token);
         showSnackbar("Login successful!", "success");
         setTimeout(() => {

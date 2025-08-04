@@ -6,6 +6,9 @@ import styled from "styled-components";
 export const Input = styled((props: TextFieldProps) => (
   <TextField variant="outlined" {...props} />
 ))`
+  width: 100%;
+  max-width: 400px;
+
   && {
     input {
       color: ${themeColors.text};

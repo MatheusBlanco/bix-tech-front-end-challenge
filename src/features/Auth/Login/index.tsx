@@ -1,30 +1,42 @@
 "use client";
+import { Logo } from "@/components/Logo";
+import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { LoginBox } from "./components/LoginBox";
+import { LoginContainer } from "./components/LoginContainer";
 import { useLogin } from "./hooks/useLogin";
 
 export const LoginForm = () => {
   const { email, setEmail, password, setPassword, handleSubmit } = useLogin();
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Input
-        required
-        id="email-required"
-        label="Required"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        type="email"
-      />
-      <Input
-        required
-        id="password-required"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
-      <button type="submit">Login</button>
-    </form>
+    <LoginContainer>
+      <form onSubmit={handleSubmit}>
+        <LoginBox>
+          <Logo
+            src="https://bixtecnologia.com.br/wp-content/uploads/2024/07/bix-tecnologia-png-200x54.webp"
+            alt="Bix Tecnologia"
+          />
+          <h1>Welcome back</h1>
+          <Input
+            required
+            id="email-required"
+            label="E-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+          />
+          <Input
+            required
+            id="password-required"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            label="Password"
+          />
+          <Button type="submit">Login</Button>
+        </LoginBox>
+      </form>
+    </LoginContainer>
   );
 };
