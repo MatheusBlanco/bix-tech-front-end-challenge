@@ -10,6 +10,7 @@ export const themeColors = {
   muted: "#a8b2d1",
   accent: "#64ffda",
   danger: "#ff1744",
+  onPrimary: "#ffffff",
 };
 
 export const muiTheme = createTheme({
