@@ -1,41 +1,19 @@
-// app/dashboard/Sidebar.tsx
 "use client";
 
 import { Home, Logout } from "@mui/icons-material";
-import styled from "styled-components";
+import { Sidebar, SidebarItem } from "../ui/Sidebar";
 
-export default function Sidebar() {
+export default function SidebarC() {
   return (
-    <Aside>
-      <NavItem>
+    <Sidebar>
+      <SidebarItem>
         <Home />
         <span>Home</span>
-      </NavItem>
-      <NavItem>
+      </SidebarItem>
+      <SidebarItem>
         <Logout />
         <span>Logout</span>
-      </NavItem>
-    </Aside>
+      </SidebarItem>
+    </Sidebar>
   );
 }
-
-const Aside = styled.aside`
-  width: 200px;
-  background-color: #0d47a1;
-  color: white;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-`;
-
-const NavItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;

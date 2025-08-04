@@ -1,62 +1,23 @@
-// app/dashboard/page.tsx
 "use client";
 
-import Sidebar from "@/components/Sidebar";
-import { CardContent, Card as MuiCard, Typography } from "@mui/material";
-import styled from "styled-components";
+import SidebarC from "@/components/Sidebar";
+import { Button } from "@/components/ui/Button";
+import { Card, CardTitle, CardValue } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
 
 export default function DashboardPage() {
   return (
-    <Container>
-      <Sidebar />
-      <MainContent>
-        <Title>Dashboard</Title>
-        <CardsContainer>
-          <SummaryCard>
-            <CardContent>
-              <Label>Receitas</Label>
-              <Amount>R$ 12.340,00</Amount>
-            </CardContent>
-          </SummaryCard>
-          {/* Repita para Despesas, Pendentes, Saldo */}
-        </CardsContainer>
-      </MainContent>
-    </Container>
+    <div style={{ display: "flex" }}>
+      <SidebarC />
+
+      <main style={{ padding: "2rem", flex: 1 }}>
+        <Card>
+          <CardTitle>Balance</CardTitle>
+          <CardValue>R$ 12.340,00</CardValue>
+        </Card>
+        <Input label="Search" />
+        <Button>Submit</Button>
+      </main>
+    </div>
   );
 }
-
-// Styled Components
-const Container = styled.div`
-  display: flex;
-  min-height: 100vh;
-`;
-
-const MainContent = styled.main`
-  flex: 1;
-  padding: 2rem;
-`;
-
-const Title = styled.h1`
-  margin-bottom: 1rem;
-`;
-
-const CardsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-`;
-
-const SummaryCard = styled(MuiCard)`
-  background-color: #f7fafc;
-  border-left: 6px solid #1976d2;
-`;
-
-const Label = styled(Typography)`
-  font-size: 1rem;
-  color: #666;
-`;
-
-const Amount = styled(Typography)`
-  font-size: 1.4rem;
-  font-weight: bold;
-`;

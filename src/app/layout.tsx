@@ -1,4 +1,5 @@
-import { SnackbarProvider } from "@/components/SnackbarProvider";
+import { SnackbarProvider } from "@/providers/SnackbarProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -26,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <SnackbarProvider>{children}</SnackbarProvider>
+        <ThemeProvider>
+          <SnackbarProvider>{children}</SnackbarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
