@@ -85,6 +85,7 @@ const StyledListItem = styled(ListItem)`
   transition: all 0.2s ease;
   width: calc(100% - 16px);
   box-sizing: border-box;
+  cursor: pointer;
 
   &:hover {
     background-color: ${themeColors.primaryLight};
