@@ -1,0 +1,80 @@
+import { FinancialData } from "@/features/Dashboard/types";
+import {
+  formatCurrency,
+  formatCurrencyValue,
+  formatDateToMMDDYYYY,
+} from "@/features/Dashboard/utils/formatters";
+import fs from "fs";
+import { unstable_cache } from "next/cache";
+import path from "path";
+
+async function getTransactionsFromFile(): Promise<FinancialData[]> {
+  try {
+    const filePath = path.join(process.cwd(), "public", "transactions.json");
+    const fileContent = await fs.promises.readFile(filePath, "utf-8");
+    return JSON.parse(fileContent);
+  } catch (error) {
+    console.error("Error reading transactions file:", error);
+    throw new Error("Failed to read transaction data");
+  }
+}
+
+export const getCachedTransactions = unstable_cache(
+  async (): Promise<FinancialData[]> => {
+    return await getTransactionsFromFile();
+  },
+  ["transactions"],
+  {
+    tags: ["transactions"],
+    revalidate: 3600,
+  }
+);
+
+export const getCachedDashboardMetadata = unstable_cache(
+  async () => {
+    const transactions = await getTransactionsFromFile();
+
+    const totalBalanceValue = transactions.reduce(
+      (acc: number, tx: { amount: string; transaction_type: string }) => {
+        const value = formatCurrencyValue(tx.amount);
+        return tx.transaction_type === "deposit" ? acc + value : acc - value;
+      },
+      0
+    );
+
+    const datesSet = new Set<string>();
+    const accountsSet = new Set<string>();
+    const industriesSet = new Set<string>();
+    const statesSet = new Set<string>();
+
+    transactions.forEach((tx: FinancialData) => {
+      datesSet.add(formatDateToMMDDYYYY(tx.date));
+      accountsSet.add(tx.account);
+      industriesSet.add(tx.industry);
+      statesSet.add(tx.state);
+    });
+
+    return {
+      totalBalance: formatCurrency(totalBalanceValue),
+      dates: Array.from(datesSet).sort(),
+      accounts: Array.from(accountsSet).sort(),
+      industries: Array.from(industriesSet).sort(),
+      states: Array.from(statesSet).sort(),
+    };
+  },
+  ["dashboard-metadata"],
+  {
+    tags: ["dashboard-metadata", "transactions"],
+    revalidate: 3600,
+  }
+);
+
+export async function getTransactions(): Promise<FinancialData[]> {
+  return await getTransactionsFromFile();
+}
+
+export async function revalidateTransactions() {
+  const { revalidateTag } = await import("next/cache");
+  revalidateTag("transactions");
+  revalidateTag("dashboard-metadata");
+}

@@ -32,14 +32,13 @@ const drawerWidth = 240;
 
 const StyledBox = styled(Box)`
   display: flex;
-  width: 100%;
   overflow-x: hidden;
 `;
 
 const StyledAppBar = styled(AppBar)`
   background: ${themeColors.primary} !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-  z-index: 1300;
+  z-index: 1400;
 `;
 
 const StyledIconButton = styled(IconButton)`
@@ -57,9 +56,9 @@ const StyledTypography = styled(Typography)`
 const StyledDrawer = styled(Drawer).withConfig({
   shouldForwardProp: (prop) => !["isOpen", "isLarge"].includes(prop),
 })<{ isOpen: boolean; isLarge: boolean }>`
+  z-index: 100;
   & .MuiDrawer-paper {
     width: ${drawerWidth}px;
-    max-width: 100vw;
     box-sizing: border-box;
     background: ${themeColors.surface};
     border-right: 1px solid ${themeColors.primary};
@@ -129,14 +128,16 @@ export const ResponsiveDrawer: React.FC<ResponsiveDrawerProps> = ({
 
       <StyledAppBar position="fixed">
         <Toolbar>
-          <StyledIconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerToggle}
-            edge="start"
-          >
-            <MenuIcon />
-          </StyledIconButton>
+          {!isLarge && (
+            <StyledIconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerToggle}
+              edge="start"
+            >
+              <MenuIcon />
+            </StyledIconButton>
+          )}
           <StyledTypography variant="h6" noWrap>
             {title}
           </StyledTypography>

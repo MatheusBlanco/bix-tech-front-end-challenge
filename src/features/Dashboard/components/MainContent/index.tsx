@@ -2,7 +2,6 @@ import { themeColors } from "@/styles/theme";
 import { styled } from "styled-components";
 
 export const MainContent = styled.main<{ isLarge: boolean }>`
-  flex-grow: 1;
   padding: 16px;
   margin-left: ${(props) => (props.isLarge ? "240px" : "0")};
   background: ${themeColors.background};

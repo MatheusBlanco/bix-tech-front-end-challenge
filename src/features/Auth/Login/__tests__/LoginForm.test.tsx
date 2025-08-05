@@ -35,14 +35,14 @@ describe("LoginForm", () => {
   it("renders logo, inputs and button", () => {
     render(<LoginForm />);
     expect(screen.getByAltText("Bix Tecnologia")).toBeInTheDocument();
-    expect(screen.getByLabelText(/E-mail/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
   });
 
   it("allows typing in email and password fields", () => {
     render(<LoginForm />);
-    const emailInput = screen.getByLabelText(/E-mail/i);
+    const emailInput = screen.getByLabelText(/Email/i);
     const passwordInput = screen.getByLabelText(/Password/i);
 
     fireEvent.change(emailInput, { target: { value: "user@example.com" } });
@@ -54,7 +54,7 @@ describe("LoginForm", () => {
 
   it("submits the form and redirects", async () => {
     render(<LoginForm />);
-    const emailInput = screen.getByLabelText(/E-mail/i);
+    const emailInput = screen.getByLabelText(/Email/i);
     const passwordInput = screen.getByLabelText(/Password/i);
     const button = screen.getByRole("button", { name: /login/i });
 
