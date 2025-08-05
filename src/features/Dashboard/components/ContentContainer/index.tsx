@@ -5,4 +5,7 @@ export const ContentContainer = styled.div`
   flex-direction: column;
   gap: 24px;
   margin-top: 64px;
+  padding: 24px;
+  position: relative;
+  z-index: 1;
 `;

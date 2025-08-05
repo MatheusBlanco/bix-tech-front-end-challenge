@@ -1,4 +1,3 @@
-// Date formatting utilities
 export const formatDateToMMDDYYYY = (
   dateString: string | number | Date
 ): string => {
@@ -18,7 +17,6 @@ export const formatDateToMonthYear = (
   return `${month}/${year}`;
 };
 
-// Currency formatting utilities
 export const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",

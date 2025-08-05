@@ -1,37 +1,18 @@
 import { themeColors } from "@/styles/theme";
-import {
-  CategoryScale,
-  Chart,
-  Legend,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Tooltip,
-} from "chart.js";
-import { Activity, TrendingUp } from "lucide-react";
+import { ArcElement, Chart, Legend, Tooltip } from "chart.js";
+import { DollarSign, PieChart } from "lucide-react";
 import { useMemo } from "react";
-import { Line } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 import styled from "styled-components";
-import { FinancialData } from "../types";
-import {
-  formatCurrency,
-  formatCurrencyValue,
-  formatDateToMonthYear,
-} from "../utils/formatters";
+import { FinancialData } from "../../types";
+import { formatCurrency, formatCurrencyValue } from "../../utils/formatters";
 
-Chart.register(
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Tooltip,
-  Legend
-);
+Chart.register(ArcElement, Tooltip, Legend);
 
-const LineChartContainer = styled.div`
+const PieChartContainer = styled.div`
   background: ${themeColors.surface};
   border-radius: 16px;
-  padding: 24px;
+  padding: 16px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid ${themeColors.outline};
@@ -40,6 +21,13 @@ const LineChartContainer = styled.div`
   height: 300px;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    padding: 24px;
+  }
 
   &:hover {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
@@ -52,16 +40,26 @@ const ChartWrapper = styled.div`
   flex: 1;
   min-height: 0;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 `;
 
 const ChartTitle = styled.h3`
   color: ${themeColors.text};
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-shrink: 0;
+
+  @media (min-width: 768px) {
+    font-size: 1.25rem;
+    margin: 0 0 20px 0;
+    gap: 12px;
+  }
 `;
 
 const EmptyStateContainer = styled.div`
@@ -105,40 +103,40 @@ const EmptyStateDescription = styled.p`
   line-height: 1.5;
 `;
 
-export function FinancialNetLineChart({
+export function FinancialCurrencyPieChart({
   financialData,
 }: {
   financialData: FinancialData[];
 }) {
-  // Net accumulated balance by month
-  const chartData = useMemo(() => {
-    const grouped: Record<string, number> = {};
+  const pieData = useMemo(() => {
+    const currencyTotals: Record<string, number> = {};
     financialData.forEach((tx) => {
-      const key = formatDateToMonthYear(tx.date);
       const value = formatCurrencyValue(tx.amount);
-      if (!grouped[key]) grouped[key] = 0;
-      grouped[key] += tx.transaction_type === "deposit" ? value : -value;
+      if (!currencyTotals[tx.currency]) currencyTotals[tx.currency] = 0;
+      currencyTotals[tx.currency] +=
+        tx.transaction_type === "deposit" ? value : -value;
     });
-    const labels = Object.keys(grouped).sort();
-    // Accumulated balance
-    let acc = 0;
-    const accumulatedBalance = labels.map((l) => (acc += grouped[l]));
+    const labels = Object.keys(currencyTotals);
+    const data = labels.map((l) => Math.max(currencyTotals[l], 0));
     return {
       labels,
       datasets: [
         {
-          label: "Net Balance",
-          data: accumulatedBalance,
-          borderColor: themeColors.primary,
-          backgroundColor: themeColors.primary + "20",
-          fill: true,
-          tension: 0.4,
-          borderWidth: 3,
-          pointBackgroundColor: themeColors.primary,
-          pointBorderColor: themeColors.surface,
-          pointBorderWidth: 2,
-          pointRadius: 6,
-          pointHoverRadius: 8,
+          label: "Balance by currency",
+          data,
+          backgroundColor: [
+            themeColors.primary,
+            themeColors.success,
+            themeColors.warning,
+            themeColors.error,
+            themeColors.info,
+            themeColors.primaryContainer,
+            themeColors.successContainer,
+            themeColors.warningContainer,
+          ],
+          borderWidth: 0,
+          hoverBorderWidth: 3,
+          hoverBorderColor: themeColors.onSurface,
         },
       ],
     };
@@ -146,46 +144,47 @@ export function FinancialNetLineChart({
 
   if (!financialData || financialData.length === 0) {
     return (
-      <LineChartContainer>
+      <PieChartContainer>
         <ChartTitle>
-          <Activity />
-          Net Balance Trend
+          <DollarSign />
+          Balance by Currency
         </ChartTitle>
         <EmptyStateContainer>
           <EmptyStateIcon>
-            <TrendingUp />
+            <PieChart />
           </EmptyStateIcon>
-          <EmptyStateTitle>No Balance Data</EmptyStateTitle>
+          <EmptyStateTitle>No Currency Data</EmptyStateTitle>
           <EmptyStateDescription>
-            Add transactions to track your net balance trend over time.
+            Add transactions to see your balance distribution across different
+            currencies.
           </EmptyStateDescription>
         </EmptyStateContainer>
-      </LineChartContainer>
+      </PieChartContainer>
     );
   }
 
   return (
-    <LineChartContainer>
+    <PieChartContainer>
       <ChartTitle>
-        <Activity />
-        Net Balance Trend
+        <DollarSign />
+        Balance by Currency
       </ChartTitle>
       <ChartWrapper>
-        <Line
-          data={chartData}
+        <Pie
+          data={pieData}
           options={{
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
               legend: {
-                position: "top" as const,
+                position: "bottom" as const,
                 labels: {
                   color: themeColors.text,
                   font: {
                     size: 14,
                     weight: 500,
                   },
-                  padding: 20,
+                  padding: 15,
                   usePointStyle: true,
                   pointStyle: "circle",
                 },
@@ -200,36 +199,9 @@ export function FinancialNetLineChart({
                 padding: 12,
                 callbacks: {
                   label: function (context) {
-                    const label = context.dataset.label || "";
-                    const value = formatCurrency(context.parsed.y);
+                    const label = context.label || "";
+                    const value = formatCurrency(context.parsed);
                     return `${label}: ${value}`;
-                  },
-                },
-              },
-            },
-            scales: {
-              x: {
-                grid: {
-                  display: false,
-                },
-                ticks: {
-                  color: themeColors.textSecondary,
-                  font: {
-                    size: 12,
-                  },
-                },
-              },
-              y: {
-                grid: {
-                  color: themeColors.outline + "40",
-                },
-                ticks: {
-                  color: themeColors.textSecondary,
-                  font: {
-                    size: 12,
-                  },
-                  callback: function (value) {
-                    return formatCurrency(Number(value));
                   },
                 },
               },
@@ -237,6 +209,6 @@ export function FinancialNetLineChart({
           }}
         />
       </ChartWrapper>
-    </LineChartContainer>
+    </PieChartContainer>
   );
 }

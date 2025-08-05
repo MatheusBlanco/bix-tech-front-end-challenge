@@ -13,12 +13,12 @@ import { BarChart3, TrendingUp } from "lucide-react";
 import { useMemo } from "react";
 import { Chart as ChartJS } from "react-chartjs-2";
 import styled from "styled-components";
-import { FinancialData } from "../types";
+import { FinancialData } from "../../types";
 import {
   formatCurrency,
   formatCurrencyValue,
   formatDateToMonthYear,
-} from "../utils/formatters";
+} from "../../utils/formatters";
 
 Chart.register(
   CategoryScale,
@@ -33,7 +33,7 @@ Chart.register(
 const ChartContainer = styled.div`
   background: ${themeColors.surface};
   border-radius: 16px;
-  padding: 24px;
+  padding: 16px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid ${themeColors.outline};
@@ -42,6 +42,13 @@ const ChartContainer = styled.div`
   height: 300px;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    padding: 24px;
+  }
 
   &:hover {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
@@ -54,16 +61,26 @@ const ChartWrapper = styled.div`
   flex: 1;
   min-height: 0;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 `;
 
 const ChartTitle = styled.h3`
   color: ${themeColors.text};
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-shrink: 0;
+
+  @media (min-width: 768px) {
+    font-size: 1.25rem;
+    margin: 0 0 20px 0;
+    gap: 12px;
+  }
 `;
 
 const EmptyStateContainer = styled.div`
@@ -112,7 +129,6 @@ export function FinancialBarLineChart({
 }: {
   financialData: FinancialData[];
 }) {
-  // Group by month/year
   const chartData = useMemo(() => {
     const grouped: Record<string, { deposit: number; withdraw: number }> = {};
     financialData.forEach((tx) => {

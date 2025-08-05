@@ -2,7 +2,6 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
-  Box,
   CssBaseline,
   Drawer,
   IconButton,
@@ -30,74 +29,84 @@ const GlobalStyle = createGlobalStyle`
 
 const drawerWidth = 240;
 
-const StyledBox = styled(Box)`
+const StyledBox = styled.div`
   display: flex;
   overflow-x: hidden;
 `;
 
 const StyledAppBar = styled(AppBar)`
-  background: ${themeColors.primary} !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-  z-index: 1400;
+  && {
+    background: ${themeColors.primary};
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1200;
+  }
 `;
 
 const StyledIconButton = styled(IconButton)`
   margin-right: 16px;
-
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1300;
   @media (min-width: 900px) {
     display: none;
   }
 `;
 
 const StyledTypography = styled(Typography)`
-  color: ${themeColors.onPrimary};
+  && {
+    color: ${themeColors.onPrimary};
+    font-weight: bold;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+  }
 `;
 
 const StyledDrawer = styled(Drawer).withConfig({
   shouldForwardProp: (prop) => !["isOpen", "isLarge"].includes(prop),
 })<{ isOpen: boolean; isLarge: boolean }>`
-  z-index: 100;
+  z-index: 1100;
   & .MuiDrawer-paper {
     width: ${drawerWidth}px;
     box-sizing: border-box;
     background: ${themeColors.surface};
     border-right: 1px solid ${themeColors.primary};
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 100vh;
   }
-
   @media (max-width: 899px) {
     display: ${(props) => (props.isOpen ? "block" : "none")};
-
     & .MuiDrawer-paper {
       width: min(280px, 80vw);
     }
   }
-
   @media (min-width: 900px) {
     display: block;
   }
 `;
 
 const StyledListItem = styled(ListItem)`
-  color: ${themeColors.text};
-  margin: 4px 8px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  width: calc(100% - 16px);
-  box-sizing: border-box;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${themeColors.primaryLight};
-    transform: translateX(4px);
-  }
-
-  .MuiListItemIcon-root {
-    color: ${themeColors.accent};
-    min-width: 40px;
-  }
-
-  .MuiListItemText-primary {
+  && {
     color: ${themeColors.text};
+    margin: 4px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    width: calc(100% - 16px);
+    box-sizing: border-box;
+    cursor: pointer;
+    &:hover {
+      background-color: ${themeColors.primaryLight};
+      transform: translateX(4px);
+    }
+    .MuiListItemIcon-root {
+      color: ${themeColors.accent};
+      min-width: 40px;
+    }
+    .MuiListItemText-primary {
+      color: ${themeColors.text};
+    }
   }
 `;
 

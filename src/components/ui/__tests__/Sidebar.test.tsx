@@ -5,7 +5,6 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { muiTheme } from "../../../styles/theme";
 import { DrawerEntry, ResponsiveDrawer } from "../ResponsiveDrawer";
 
-// Mock useMediaQuery
 jest.mock("@mui/material", () => ({
   ...jest.requireActual("@mui/material"),
   useMediaQuery: jest.fn(),
@@ -26,7 +25,7 @@ const renderWithTheme = (component: React.ReactElement) => {
 
 describe("ResponsiveDrawer", () => {
   beforeEach(() => {
-    mockUseMediaQuery.mockReturnValue(true); // Mock large screen by default
+    mockUseMediaQuery.mockReturnValue(true);
   });
 
   it("renders drawer with title and menu items", () => {
@@ -53,6 +52,6 @@ describe("ResponsiveDrawer", () => {
   it("uses default title when none provided", () => {
     renderWithTheme(<ResponsiveDrawer entries={mockEntries} />);
 
-    expect(screen.getByText("Dashboard")).toBeInTheDocument(); // AppBar title
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
   });
 });
