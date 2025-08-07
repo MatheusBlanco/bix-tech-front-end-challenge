@@ -29,6 +29,11 @@ const PieChartContainer = styled.div`
     padding: 24px;
   }
 
+  @media (min-width: 1200px) {
+    max-width: 400px;
+    margin: 0 auto 24px 0;
+  }
+
   &:hover {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
       0 4px 6px -2px rgba(0, 0, 0, 0.05);

@@ -17,10 +17,20 @@ export const ChartsGrid = styled.div`
   }
 
   @media (min-width: 1200px) {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 1fr;
 
     & > div:first-child {
       grid-column: 1 / -1;
+    }
+
+    /* Pie chart gets smaller width */
+    & > div:nth-child(2) {
+      grid-column: 1 / 2;
+    }
+
+    /* Line chart gets more width */
+    & > div:nth-child(3) {
+      grid-column: 2 / 3;
     }
   }
 `;

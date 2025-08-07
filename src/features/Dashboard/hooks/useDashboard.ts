@@ -12,6 +12,12 @@ export const useDashboard = () => {
   const [stateFilter, setStateFilter] = useState("");
   const [financialData, setFinancialData] = useState<FinancialData[]>([]);
   const [totalBalance, setTotalBalance] = useState<string>("R$ 0,00");
+  const [revenues, setRevenues] = useState<string>("R$ 0,00");
+  const [expenses, setExpenses] = useState<string>("R$ 0,00");
+  const [pendingTransactions, setPendingTransactions] =
+    useState<string>("R$ 0,00");
+  const [pendingTransactionsCount, setPendingTransactionsCount] =
+    useState<number>(0);
   const [accounts, setAccounts] = useState<string[]>([]);
   const [dates, setDates] = useState<string[]>([]);
   const [industries, setIndustries] = useState<string[]>([]);
@@ -27,6 +33,10 @@ export const useDashboard = () => {
         const {
           transactions,
           totalBalance,
+          revenues,
+          expenses,
+          pendingTransactions,
+          pendingTransactionsCount,
           dates,
           accounts,
           industries,
@@ -34,6 +44,10 @@ export const useDashboard = () => {
         } = result.data;
         setFinancialData(transactions);
         setTotalBalance(totalBalance);
+        setRevenues(revenues);
+        setExpenses(expenses);
+        setPendingTransactions(pendingTransactions);
+        setPendingTransactionsCount(pendingTransactionsCount);
         setDates(dates);
         setAccounts(accounts);
         setIndustries(industries);
@@ -94,6 +108,10 @@ export const useDashboard = () => {
   return {
     financialData,
     totalBalance,
+    revenues,
+    expenses,
+    pendingTransactions,
+    pendingTransactionsCount,
     dates,
     accounts,
     industries,

@@ -42,6 +42,41 @@ export const getCachedDashboardMetadata = unstable_cache(
       0
     );
 
+    const revenuesValue = transactions.reduce(
+      (acc: number, tx: { amount: string; transaction_type: string }) => {
+        if (tx.transaction_type === "deposit") {
+          return acc + formatCurrencyValue(tx.amount);
+        }
+        return acc;
+      },
+      0
+    );
+
+    const expensesValue = transactions.reduce(
+      (acc: number, tx: { amount: string; transaction_type: string }) => {
+        if (tx.transaction_type === "withdraw") {
+          return acc + formatCurrencyValue(tx.amount);
+        }
+        return acc;
+      },
+      0
+    );
+
+    const now = Date.now();
+    const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
+
+    const pendingTransactions = transactions.filter(
+      (tx: FinancialData) => tx.date >= twentyFourHoursAgo
+    );
+
+    const pendingTransactionsValue = pendingTransactions.reduce(
+      (acc: number, tx: { amount: string; transaction_type: string }) => {
+        const value = formatCurrencyValue(tx.amount);
+        return tx.transaction_type === "deposit" ? acc + value : acc - value;
+      },
+      0
+    );
+
     const datesSet = new Set<string>();
     const accountsSet = new Set<string>();
     const industriesSet = new Set<string>();
@@ -56,6 +91,10 @@ export const getCachedDashboardMetadata = unstable_cache(
 
     return {
       totalBalance: formatCurrency(totalBalanceValue),
+      revenues: formatCurrency(revenuesValue),
+      expenses: formatCurrency(expensesValue),
+      pendingTransactions: formatCurrency(pendingTransactionsValue),
+      pendingTransactionsCount: pendingTransactions.length,
       dates: Array.from(datesSet).sort(),
       accounts: Array.from(accountsSet).sort(),
       industries: Array.from(industriesSet).sort(),

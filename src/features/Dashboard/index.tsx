@@ -36,6 +36,10 @@ export default function Dashboard() {
   ];
   const {
     totalBalance,
+    revenues,
+    expenses,
+    pendingTransactions,
+    pendingTransactionsCount,
     dates,
     accounts,
     industries,
@@ -76,7 +80,13 @@ export default function Dashboard() {
                 ufStates={ufStates}
               />
 
-              <Stats totalBalance={totalBalance} />
+              <Stats
+                totalBalance={totalBalance}
+                revenues={revenues}
+                expenses={expenses}
+                pendingTransactions={pendingTransactions}
+                pendingTransactionsCount={pendingTransactionsCount}
+              />
 
               <ChartsGrid>
                 <FinancialBarLineChart financialData={filteredData} />
