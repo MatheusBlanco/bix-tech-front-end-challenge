@@ -1,6 +1,5 @@
 import { useSnackbar } from "@/providers/SnackbarProvider";
 import { useCallback, useEffect, useState } from "react";
-import { getDashboardData } from "../actions/getDashboardData";
 import { FinancialData } from "../types";
 import { formatDateToMMDDYYYY } from "../utils/formatters";
 
@@ -27,7 +26,13 @@ export const useDashboard = () => {
   const handleFinancialData = useCallback(async () => {
     try {
       setLoading(true);
-      const result = await getDashboardData();
+      const response = await fetch("/api/dashboard");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
 
       if (result.success && result.data) {
         const {
