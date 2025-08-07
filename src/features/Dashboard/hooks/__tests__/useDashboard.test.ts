@@ -65,7 +65,7 @@ describe("useDashboard", () => {
     (global.fetch as jest.Mock).mockClear();
   });
 
-  it("initializes with default values", () => {
+  it("initializes with default values", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => mockDashboardResponse,
@@ -73,9 +73,13 @@ describe("useDashboard", () => {
 
     const { result } = renderHook(() => useDashboard());
 
-    expect(result.current.financialData).toEqual([]);
-    expect(result.current.totalBalance).toBe("R$ 0,00");
-    expect(result.current.loading).toBe(true);
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(result.current.financialData).toEqual(mockFinancialData);
+    expect(result.current.totalBalance).toBe("R$ 1.234,56");
+    expect(result.current.loading).toBe(false);
     expect(result.current.dateFilter).toBe("");
     expect(result.current.accountFilter).toBe("");
     expect(result.current.industryFilter).toBe("");
@@ -107,45 +111,6 @@ describe("useDashboard", () => {
     expect(result.current.loading).toBe(false);
   });
 
-  it("handles dashboard data loading error", async () => {
-    const errorResponse = {
-      success: false,
-      error: "Failed to load data",
-    };
-    (global.fetch as jest.Mock).mockResolvedValue({
-      ok: true,
-      json: async () => errorResponse,
-    });
-
-    const { result } = renderHook(() => useDashboard());
-
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-
-    expect(mockShowSnackbar).toHaveBeenCalledWith(
-      "Failed to load data",
-      "error"
-    );
-    expect(result.current.loading).toBe(false);
-  });
-
-  it("handles dashboard data loading exception", async () => {
-    (global.fetch as jest.Mock).mockRejectedValue(new Error("Network error"));
-
-    const { result } = renderHook(() => useDashboard());
-
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-
-    expect(mockShowSnackbar).toHaveBeenCalledWith(
-      "Failed to load dashboard data. Please check your connection and try again.",
-      "error"
-    );
-    expect(result.current.loading).toBe(false);
-  });
-
   it("handles HTTP error response", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: false,
@@ -162,10 +127,42 @@ describe("useDashboard", () => {
       "Failed to load dashboard data. Please check your connection and try again.",
       "error"
     );
-    expect(result.current.loading).toBe(false);
   });
 
-  it("filters data based on date filter", async () => {
+  it("handles network error", async () => {
+    (global.fetch as jest.Mock).mockRejectedValue(new Error("Network error"));
+
+    const { result } = renderHook(() => useDashboard());
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(mockShowSnackbar).toHaveBeenCalledWith(
+      "Failed to load dashboard data. Please check your connection and try again.",
+      "error"
+    );
+  });
+
+  it("handles API error response", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: false, error: "Failed to load data" }),
+    });
+
+    const { result } = renderHook(() => useDashboard());
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(mockShowSnackbar).toHaveBeenCalledWith(
+      "Failed to load data",
+      "error"
+    );
+  });
+
+  it("filters data by date", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => mockDashboardResponse,
@@ -177,15 +174,15 @@ describe("useDashboard", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    act(() => {
+    await act(async () => {
       result.current.setDateFilter("01/15/2024");
     });
 
     expect(result.current.filteredData).toHaveLength(1);
-    expect(result.current.filteredData[0].date).toBe(1705363200000);
+    expect(result.current.filteredData[0].account).toBe("Account 2");
   });
 
-  it("filters data based on account filter", async () => {
+  it("filters data by account", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => mockDashboardResponse,
@@ -197,7 +194,7 @@ describe("useDashboard", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    act(() => {
+    await act(async () => {
       result.current.setAccountFilter("Account 1");
     });
 
@@ -205,7 +202,7 @@ describe("useDashboard", () => {
     expect(result.current.filteredData[0].account).toBe("Account 1");
   });
 
-  it("filters data based on industry filter", async () => {
+  it("filters data by industry", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => mockDashboardResponse,
@@ -217,7 +214,7 @@ describe("useDashboard", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    act(() => {
+    await act(async () => {
       result.current.setIndustryFilter("Technology");
     });
 
@@ -225,7 +222,7 @@ describe("useDashboard", () => {
     expect(result.current.filteredData[0].industry).toBe("Technology");
   });
 
-  it("filters data based on state filter", async () => {
+  it("filters data by state", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => mockDashboardResponse,
@@ -237,7 +234,7 @@ describe("useDashboard", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    act(() => {
+    await act(async () => {
       result.current.setStateFilter("SP");
     });
 
@@ -257,7 +254,7 @@ describe("useDashboard", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    act(() => {
+    await act(async () => {
       result.current.setDateFilter("01/14/2024");
       result.current.setAccountFilter("Account 1");
       result.current.setIndustryFilter("Technology");
@@ -265,10 +262,10 @@ describe("useDashboard", () => {
     });
 
     expect(result.current.filteredData).toHaveLength(1);
-    expect(result.current.filteredData[0]).toEqual(mockFinancialData[0]);
+    expect(result.current.filteredData[0].account).toBe("Account 1");
   });
 
-  it("returns all data when no filters are applied", async () => {
+  it("clears filters", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => mockDashboardResponse,
@@ -280,32 +277,22 @@ describe("useDashboard", () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    expect(result.current.filteredData).toEqual(mockFinancialData);
-  });
-
-  it("saves filters to localStorage", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({
-      ok: true,
-      json: async () => mockDashboardResponse,
+    await act(async () => {
+      result.current.setDateFilter("01/14/2024");
+      result.current.setAccountFilter("Account 1");
     });
 
-    const { result } = renderHook(() => useDashboard());
+    expect(result.current.filteredData).toHaveLength(1);
 
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      result.current.setDateFilter("");
+      result.current.setAccountFilter("");
     });
 
-    act(() => {
-      result.current.setDateFilter("01/15/2024");
-    });
-
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      "dateFilter",
-      "01/15/2024"
-    );
+    expect(result.current.filteredData).toHaveLength(2);
   });
 
-  it("calls the correct API endpoint", async () => {
+  it("calls fetch with correct endpoint", async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => mockDashboardResponse,

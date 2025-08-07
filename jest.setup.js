@@ -1,6 +1,25 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import "@testing-library/jest-dom";
 
+// Suppress console errors for expected error scenarios in tests
+const originalError = console.error;
+beforeAll(() => {
+  console.error = (...args) => {
+    if (
+      typeof args[0] === "string" &&
+      (args[0].includes("Error loading dashboard data") ||
+        args[0].includes("Dashboard data error"))
+    ) {
+      return;
+    }
+    originalError.call(console, ...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalError;
+});
+
 if (typeof global.TextEncoder === "undefined") {
   global.TextEncoder = require("util").TextEncoder;
 }

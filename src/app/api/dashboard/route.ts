@@ -8,7 +8,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 async function getTransactionsFromFile(): Promise<FinancialData[]> {
   try {
-    // Use relative URL for development, absolute for production
     const baseUrl = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
       : process.env.NODE_ENV === "development"

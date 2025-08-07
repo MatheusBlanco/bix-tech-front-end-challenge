@@ -1,5 +1,11 @@
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { SnackbarProvider, useSnackbar } from "../SnackbarProvider";
 
 const TestComponent = () => {
@@ -53,7 +59,9 @@ describe("SnackbarProvider", () => {
       </SnackbarProvider>
     );
 
-    fireEvent.click(screen.getByTestId("show-success"));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("show-success"));
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Test message")).toBeInTheDocument();
@@ -67,7 +75,9 @@ describe("SnackbarProvider", () => {
       </SnackbarProvider>
     );
 
-    fireEvent.click(screen.getByTestId("show-error"));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("show-error"));
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Error message")).toBeInTheDocument();
@@ -81,7 +91,9 @@ describe("SnackbarProvider", () => {
       </SnackbarProvider>
     );
 
-    fireEvent.click(screen.getByTestId("show-info"));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("show-info"));
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Info message")).toBeInTheDocument();
@@ -95,7 +107,9 @@ describe("SnackbarProvider", () => {
       </SnackbarProvider>
     );
 
-    fireEvent.click(screen.getByTestId("show-warning"));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("show-warning"));
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Warning message")).toBeInTheDocument();
@@ -109,14 +123,18 @@ describe("SnackbarProvider", () => {
       </SnackbarProvider>
     );
 
-    fireEvent.click(screen.getByTestId("show-success"));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("show-success"));
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Test message")).toBeInTheDocument();
     });
 
-    const closeButton = screen.getByRole("button", { name: /close/i });
-    fireEvent.click(closeButton);
+    await act(async () => {
+      const closeButton = screen.getByRole("button", { name: /close/i });
+      fireEvent.click(closeButton);
+    });
 
     await waitFor(() => {
       expect(screen.queryByText("Test message")).not.toBeInTheDocument();
@@ -132,13 +150,17 @@ describe("SnackbarProvider", () => {
       </SnackbarProvider>
     );
 
-    fireEvent.click(screen.getByTestId("show-success"));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("show-success"));
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Test message")).toBeInTheDocument();
     });
 
-    jest.advanceTimersByTime(3000);
+    await act(async () => {
+      jest.advanceTimersByTime(3000);
+    });
 
     await waitFor(() => {
       expect(screen.queryByText("Test message")).not.toBeInTheDocument();
