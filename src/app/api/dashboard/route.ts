@@ -8,9 +8,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 async function getTransactionsFromFile(): Promise<FinancialData[]> {
   try {
-    const response = await fetch(
-      `${process.env.VERCEL_URL || "http://localhost:3000"}/transactions.json`
-    );
+    // Use relative URL for development, absolute for production
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "";
+
+    const url = baseUrl ? `${baseUrl}/transactions.json` : "/transactions.json";
+
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Failed to fetch transactions: ${response.status}`);
     }
