@@ -4,18 +4,31 @@ import {
   formatCurrencyValue,
   formatDateToMMDDYYYY,
 } from "@/features/Dashboard/utils/formatters";
-import fs from "fs";
 import { unstable_cache } from "next/cache";
-import path from "path";
 
 async function getTransactionsFromFile(): Promise<FinancialData[]> {
   try {
-    const filePath = path.join(process.cwd(), "public", "transactions.json");
-    const fileContent = await fs.promises.readFile(filePath, "utf-8");
-    return JSON.parse(fileContent);
+    const response = await fetch("/transactions.json");
+    if (!response.ok) {
+      throw new Error(`Failed to fetch transactions: ${response.status}`);
+    }
+    return await response.json();
   } catch (error) {
     console.error("Error reading transactions file:", error);
     throw new Error("Failed to read transaction data");
+  }
+}
+
+export async function getTransactionsClient(): Promise<FinancialData[]> {
+  try {
+    const response = await fetch("/transactions.json");
+    if (!response.ok) {
+      throw new Error(`Failed to fetch transactions: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    throw new Error("Failed to fetch transaction data");
   }
 }
 

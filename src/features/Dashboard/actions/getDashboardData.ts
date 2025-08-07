@@ -23,7 +23,8 @@ export async function getDashboardData() {
     console.error("Error fetching dashboard data:", error);
     return {
       success: false,
-      error: "Failed to fetch dashboard data",
+      error:
+        "Failed to fetch dashboard data. Please check your connection and try again.",
     };
   }
 }

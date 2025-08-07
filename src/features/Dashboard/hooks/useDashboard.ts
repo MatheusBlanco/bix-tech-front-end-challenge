@@ -53,11 +53,15 @@ export const useDashboard = () => {
         setIndustries(industries);
         setStates(states);
       } else {
+        console.error("Dashboard data error:", result.error);
         showSnackbar(result.error || "Failed to load dashboard data", "error");
       }
     } catch (err) {
       console.error("Error loading dashboard data:", err);
-      showSnackbar("Failed to load dashboard data", "error");
+      showSnackbar(
+        "Failed to load dashboard data. Please check your connection and try again.",
+        "error"
+      );
     } finally {
       setLoading(false);
     }

@@ -122,7 +122,7 @@ describe("useDashboard", () => {
     });
 
     expect(mockShowSnackbar).toHaveBeenCalledWith(
-      "Failed to load dashboard data",
+      "Failed to load dashboard data. Please check your connection and try again.",
       "error"
     );
     expect(result.current.loading).toBe(false);
