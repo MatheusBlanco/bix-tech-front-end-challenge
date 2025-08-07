@@ -6,7 +6,7 @@ A financial dashboard application built with Next.js, TypeScript, Material-UI an
 
 ### Authentication
 
-- **Login**: JWT-based authentication
+- **Login**: JWT-based authentication (default user: test@example.com, password 1234)
 - **Protected Routes**: Middleware-based route protection for dashboard
 
 ### Dashboard Analytics
